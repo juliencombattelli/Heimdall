@@ -95,7 +95,13 @@ constexpr std::uint32_t SCB_base = SCS_base + 0x0D00;
 
 // TODO add SysTick registers offset
 
-// TODO add NVIC registers offset
+constexpr std::uint32_t NVIC_ISER_offset = 0x000;
+constexpr std::uint32_t NVIC_ICER_offset = 0x080;
+constexpr std::uint32_t NVIC_ISPR_offset = 0x100;
+constexpr std::uint32_t NVIC_ICPR_offset = 0x180;
+constexpr std::uint32_t NVIC_IABR_offset = 0x200;
+constexpr std::uint32_t NVIC_IP_offset = 0x300;
+constexpr std::uint32_t NVIC_STIR_offset = 0xE00;
 
 // TODO add DWT registers offset
 
