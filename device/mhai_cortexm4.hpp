@@ -80,7 +80,14 @@ constexpr std::uint32_t CortexM = 0x4; // Cortex-M Core
 // Base addresses for memory mapping
 ///////////////////////////////////////////////////////////////////////////////
 
-// TODO add base addresses
+constexpr std::uint32_t SCS_base = 0xE000E000;
+constexpr std::uint32_t ITM_base = 0xE0000000;
+constexpr std::uint32_t DWT_base = 0xE0001000;
+constexpr std::uint32_t TPI_base = 0xE0040000;
+constexpr std::uint32_t CoreDebug_base = 0xE000EDF0;
+constexpr std::uint32_t SysTick_base = SCS_base + 0x0010;
+constexpr std::uint32_t NVIC_base = SCS_base + 0x0100;
+constexpr std::uint32_t SCB_base = SCS_base + 0x0D00;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Peripherals registers offset
