@@ -111,7 +111,26 @@ constexpr std::uint32_t NVIC_STIR_offset = 0xE00;
 
 // TODO add SysTick periph def
 
-// TODO add NVIC periph def
+enum class IRQn;
+
+struct Nvic : protected Periph<NVIC_base>
+{
+    using ISER = RegisterRange<std::uint32_t, 8, NVIC_ISER_offset>;
+    using ICER = RegisterRange<std::uint32_t, 8, NVIC_ICER_offset>;
+    using ISPR = RegisterRange<std::uint32_t, 8, NVIC_ISPR_offset>;
+    using ICPR = RegisterRange<std::uint32_t, 8, NVIC_ICPR_offset>;
+    using IABR = RegisterRange<std::uint32_t, 8, NVIC_IABR_offset>;
+    using IP = RegisterRange<std::uint8_t, 240, NVIC_IP_offset>;
+    using STIR = Register32<NVIC_STIR_offset>;
+
+    template<IRQn irq>
+    static constexpr void enableIRQ() noexcept
+    {
+        constexpr std::uint32_t reg_index = ((uint32_t)(int32_t)irq) >> 5UL;
+        constexpr std::uint32_t value = 1UL << (((uint32_t)(int32_t)irq) & 0x1FUL);
+        ISER::at<reg_index>::set(value);
+    }
+};
 
 // TODO add DWT periph def
 
