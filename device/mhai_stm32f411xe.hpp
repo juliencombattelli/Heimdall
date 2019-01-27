@@ -509,6 +509,156 @@ constexpr std::uint32_t USB_OTG_HostChannel_HCINT_offset = 0x508;
 constexpr std::uint32_t USB_OTG_HostChannel_HCINTMSK_offset = 0x50C;
 constexpr std::uint32_t USB_OTG_HostChannel_HCTSIZ_offset = 0x510;
 constexpr std::uint32_t USB_OTG_HostChannel_HCDMA_offset = 0x514;
+//
+//constexpr std::uint32_t periph_base = 0x40000000U;
+//constexpr std::uint32_t apb1periph_base = periph_base;
+//constexpr std::uint32_t apb2periph_base = periph_base + 0x00010000U;
+//constexpr std::uint32_t ahb1periph_base = periph_base + 0x00020000U;
+//constexpr std::uint32_t ahb2periph_base = periph_base + 0x10000000U;
+//
+//constexpr std::uint32_t rcc_base = ahb1periph_base + 0x3800u;
+//
+//constexpr std::uint32_t rcc_ahb1enr_offset = 0x30;
+//
+//constexpr std::uint32_t rcc_ahb1enr = rcc_base + rcc_ahb1enr_offset;
+//
+constexpr std::uint32_t rcc_ahb1enr_gpioaen = 0x1u << 0u;
+constexpr std::uint32_t rcc_ahb1enr_gpioben = 0x1u << 1u;
+constexpr std::uint32_t rcc_ahb1enr_gpiocen = 0x1u << 2u;
+constexpr std::uint32_t rcc_ahb1enr_gpioden = 0x1u << 3u;
+//
+//constexpr std::uint32_t gpioa_base = ahb1periph_base + 0x0000u;
+//constexpr std::uint32_t gpiob_base = ahb1periph_base + 0x0400u;
+//constexpr std::uint32_t gpioc_base = ahb1periph_base + 0x0800u;
+//constexpr std::uint32_t gpiod_base = ahb1periph_base + 0x0c00u;
+//constexpr std::uint32_t gpioe_base = ahb1periph_base + 0x1000u;
+//constexpr std::uint32_t gpioh_base = ahb1periph_base + 0x1c00u;
+//
+//constexpr std::uint32_t exti_base = apb2periph_base + 0x3C00U;
+//
+//constexpr std::uint32_t gpio_moder_offset = 0x00;
+//constexpr std::uint32_t gpio_pupdr_offset = 0x0C;
+//
+//constexpr std::uint32_t exti_imr_offset = 0x00;
+
+enum class Port
+{
+    A,
+    B,
+    C,
+    D
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Peripherals, registers and operations definitions
+///////////////////////////////////////////////////////////////////////////////
+
+struct Rcc : protected Periph<RCC_BASE>
+{
+    using AHB1ENR = Register32<RCC_AHB1ENR_offset>;
+
+    template<Port... port>
+    static constexpr void enable() noexcept
+    {
+        AHB1ENR::set_bit<((0x1u << static_cast<std::uint32_t>(port)), ...)>();
+        volatile std::uint32_t tmpreg = AHB1ENR::get_bit<rcc_ahb1enr_gpiocen>();
+        (void)tmpreg;
+    }
+};
+
+enum class Pin
+{
+    _00,
+    _01,
+    _02,
+    _03,
+    _04,
+    _05,
+    _06,
+    _07,
+    _08,
+    _09,
+    _10,
+    _11,
+    _12,
+    _13,
+    _14,
+    _15
+};
+
+enum class GpioMode
+{
+    Input,
+    Output,
+    Alternate,
+    Analog
+};
+
+enum class PullMode
+{
+    No,
+    Up,
+    Down
+};
+
+template<std::uint32_t gpio_base>
+struct Gpio : protected Periph<gpio_base>
+{
+    using moder = typename Gpio::template Register32<GPIO_MODER_offset>;
+    using pupdr = typename Gpio::template Register32<GPIO_PUPDR_offset>;
+
+    template<Pin pin, GpioMode mode>
+    static constexpr void setPinMode() noexcept
+    {
+        auto pinx2_ = static_cast<std::uint32_t>(pin) * 2;
+        auto mode_ = static_cast<std::uint32_t>(mode);
+        moder::modify(0b11 << pinx2_, mode_ << pinx2_);
+    }
+
+    template<Pin pin, PullMode mode>
+    static constexpr void setPullMode() noexcept
+    {
+        auto pinx2_ = static_cast<std::uint32_t>(pin) * 2;
+        auto mode_ = static_cast<std::uint32_t>(mode);
+        moder::modify(0b11 << pinx2_, mode_ << pinx2_);
+    }
+};
+
+using GpioA = Gpio<GPIOA_BASE>;
+using GpioB = Gpio<GPIOB_BASE>;
+using GpioC = Gpio<GPIOC_BASE>;
+using GpioD = Gpio<GPIOD_BASE>;
+
+enum class ExtILine
+{
+    _00,
+    _01,
+    _02,
+    _03,
+    _04,
+    _05,
+    _06,
+    _07,
+    _08,
+    _09,
+    _10,
+    _11,
+    _12,
+    _13,
+    _14,
+    _15
+};
+
+struct Exti : protected Periph<EXTI_BASE>
+{
+    using imr = Register32<EXTI_IMR_offset>;
+
+    template<ExtILine line>
+    static constexpr void enableIT() noexcept
+    {
+        imr::set_bit<0x1U << static_cast<std::uint32_t>(line)>();
+    }
+};
 
 } // namespace stm32f411xe
 } // namespace mhai
