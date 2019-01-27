@@ -67,9 +67,17 @@ struct Periph
         {
             set((get() & ~clearmask) | setmask);
         }
+    };
 
-    }; // struct Register
-}; // struct Periph
+    template<addr_t reg_offset>
+    using Register32 = Register<std::uint32_t, reg_offset>;
+
+    template<addr_t reg_offset>
+    using Register16 = Register<std::uint16_t, reg_offset>;
+
+    template<addr_t reg_offset>
+    using Register8 = Register<std::uint8_t, reg_offset>;
+};
 
 } // namespace mhai
 
