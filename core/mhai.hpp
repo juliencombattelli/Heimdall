@@ -3,7 +3,7 @@
 // Author      : Julien Combattelli
 // EMail       : julien.combattelli@gmail.com
 // Date        : Jan 26, 2019
-// Version     : 1.1.0
+// Version     : 1.2.0
 // Copyright   : This file is part of the Modern Hardware Abstraction Interface
 //               (MHAI) project which is released under MIT license.
 //               See file LICENSE.txt for full license details.
@@ -77,6 +77,16 @@ struct Periph
 
     template<addr_t reg_offset>
     using Register8 = Register<std::uint8_t, reg_offset>;
+
+    template<typename T, std::size_t count, addr_t reg_offset>
+    struct RegisterRange
+    {
+        template<std::size_t index>
+        struct at : Register<T, reg_offset + index * sizeof(T)>
+        {
+            static_assert(index < count, "index must be in the interval [0;count[");
+        };
+    };
 };
 
 } // namespace mhai
