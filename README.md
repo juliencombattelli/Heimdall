@@ -1,4 +1,6 @@
-# MHAI - Modern Hardware Abstraction Interface
+# Heimdall
 
-MHAI is a vendor-independant hardware abstraction layer enabling consistent device support and a clean modern software interface.
-Written using C++17, this library targets efficiency and simplicity of use.
+Heimdall, a pun for MDAL, stands for Modern Device Access Layer.
+It is a vendor-independant library enabling a consistent and portable access to memory-mapped device registers.
+Written using C++20, this library targets efficiency, safety, and simplicity of use.
+Most errors can be detected at build time when the corresponding input data are known during the compilation (eg. invalid write access to a read-only device register, invalid value written into a bitfield, etc).
