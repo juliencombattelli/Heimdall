@@ -1,0 +1,10 @@
+{
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "[cpp]": {
+        "editor.formatOnSave": true
+    },
+    "[cmake]": {
+        "editor.formatOnSave": false
+    },
+}
